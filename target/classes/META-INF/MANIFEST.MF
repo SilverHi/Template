@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Implementation-Title: ruoyi
+Implementation-Version: 3.8.0
+Built-By: 1
+Implementation-Vendor-Id: com.ruoyi
+Build-Jdk: 1.8.0_152
+Implementation-URL: http://www.ruoyi.vip
+Created-By: Maven Integration for Eclipse
+

@@ -256,6 +256,7 @@
 	</dependencies>
 
 	<build>
+		<defaultGoal>compile</defaultGoal>
 	    <finalName>${project.artifactId}</finalName>
 	    <plugins>
 	        <plugin>

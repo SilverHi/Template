@@ -82,10 +82,10 @@
         </dependency>
 
         <!-- redis 缓存操作 -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-data-redis</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
 
         <!-- pool 对象池 -->
         <dependency>
@@ -256,6 +256,7 @@
 	</dependencies>
 
 	<build>
+		<defaultGoal>compile</defaultGoal>
 	    <finalName>${project.artifactId}</finalName>
 	    <plugins>
 	        <plugin>

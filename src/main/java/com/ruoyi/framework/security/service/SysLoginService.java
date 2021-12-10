@@ -2,6 +2,7 @@ package com.ruoyi.framework.security.service;
 
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,8 +19,10 @@ import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.ip.IpUtils;
 import com.ruoyi.framework.manager.AsyncManager;
 import com.ruoyi.framework.manager.factory.AsyncFactory;
-//import com.ruoyi.framework.redis.RedisCache;
+import com.ruoyi.framework.redis.RedisCache;
 import com.ruoyi.framework.security.LoginUser;
+import com.ruoyi.project.red.domain.RedCaptcha;
+import com.ruoyi.project.red.service.IRedCaptchaService;
 import com.ruoyi.project.system.domain.SysUser;
 import com.ruoyi.project.system.service.ISysConfigService;
 import com.ruoyi.project.system.service.ISysUserService;
@@ -32,14 +35,21 @@ import com.ruoyi.project.system.service.ISysUserService;
 @Component
 public class SysLoginService
 {
+	@Value("${spring.redis.enabled}")
+  	private boolean enabledRedis;
+	
     @Autowired
     private TokenService tokenService;
 
     @Resource
     private AuthenticationManager authenticationManager;
 
-//    @Autowired
-//    private RedisCache redisCache;
+    @Autowired
+    private RedisCache redisCache;
+    
+    //mysql 验证码 替代 redis
+    @Autowired
+    private IRedCaptchaService redCaptchaService;
 
     @Autowired
     private ISysUserService userService;
@@ -103,9 +113,18 @@ public class SysLoginService
     public void validateCaptcha(String username, String code, String uuid)
     {
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
-        String captcha = null;
-        String captcha = redisCache.getCacheObject(verifyKey);
-        redisCache.deleteObject(verifyKey);
+        String captcha = "";
+        if(enabledRedis) {
+        	captcha = redisCache.getCacheObject(verifyKey);
+        	redisCache.deleteObject(verifyKey);
+        }else {
+        	RedCaptcha redCaptcha = redCaptchaService.selectRedCaptchaByCaptchaKey(verifyKey);
+        	if(null!=redCaptcha) {
+        		captcha = redCaptcha.getCaptchaCode();
+        		redCaptchaService.deleteRedCaptchaByCaptchaId(redCaptcha.getCaptchaId());
+        	}
+        }
+        
         if (captcha == null)
         {
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire")));

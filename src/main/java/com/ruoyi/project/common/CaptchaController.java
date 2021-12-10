@@ -2,6 +2,7 @@ package com.ruoyi.project.common;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -13,10 +14,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.google.code.kaptcha.Producer;
 import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.IdUtils;
 import com.ruoyi.common.utils.sign.Base64;
-//import com.ruoyi.framework.redis.RedisCache;
+import com.ruoyi.framework.redis.RedisCache;
 import com.ruoyi.framework.web.domain.AjaxResult;
+import com.ruoyi.project.red.domain.RedCaptcha;
+import com.ruoyi.project.red.service.IRedCaptchaService;
 import com.ruoyi.project.system.service.ISysConfigService;
 
 /**
@@ -33,9 +37,16 @@ public class CaptchaController
     @Resource(name = "captchaProducerMath")
     private Producer captchaProducerMath;
 
-//    @Autowired
-//    private RedisCache redisCache;
+    @Autowired
+    private RedisCache redisCache;
     
+    @Autowired
+    private IRedCaptchaService redCaptchaService;
+    
+  //是否启用了redis
+  	@Value("${spring.redis.enabled}")
+  	private boolean enabledRedis;
+  	
     // 验证码类型
     @Value("${ruoyi.captchaType}")
     private String captchaType;
@@ -77,8 +88,21 @@ public class CaptchaController
             capStr = code = captchaProducer.createText();
             image = captchaProducer.createImage(capStr);
         }
-
-        redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        boolean redis = enabledRedis;
+        if(!redis) {
+        	//记录到mysql
+        	RedCaptcha captcha = new RedCaptcha();
+            captcha.setCaptchaKey(verifyKey);
+            captcha.setCaptchaCode(code);
+            Date expirationTime = DateUtils.getNowDate();
+            captcha.setCreateTime(expirationTime);
+            captcha.setCaptchaExpiration(Constants.CAPTCHA_EXPIRATION);
+            captcha.setCaptchaUtil(TimeUnit.MINUTES.toString());
+            redCaptchaService.insertRedCaptcha(captcha);
+        }else {
+        	redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        }
+        
         // 转换流信息写出
         FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         try

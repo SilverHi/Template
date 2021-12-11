@@ -65,4 +65,6 @@ public interface IRedUserService
      * @return 结果
      */
     public int deleteRedUserByUserId(Long userId);
+    
+    public int deleteRedUserByUserKey(String userKey);
 }

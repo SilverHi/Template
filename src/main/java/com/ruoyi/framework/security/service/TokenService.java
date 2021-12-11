@@ -131,7 +131,11 @@ public class TokenService
         if (StringUtils.isNotEmpty(token))
         {
             String userKey = getTokenKey(token);
-            redisCache.deleteObject(userKey);
+            if(enabledRedis) {
+            	redisCache.deleteObject(userKey);
+            }else {
+            	redUserService.deleteRedUserByUserKey(userKey);
+            }
         }
     }
 

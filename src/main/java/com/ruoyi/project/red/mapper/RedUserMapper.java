@@ -60,4 +60,6 @@ public interface RedUserMapper
     public int deleteRedUserByUserIds(Long[] userIds);
     
     public RedUser selectRedUserByUserKey(String userKey);
+    
+    public int deleteRedUserByUserKey(String userKey);
 }

@@ -97,4 +97,10 @@ public class RedUserServiceImpl implements IRedUserService
 	public RedUser selectRedUserByUserKey(String userKey) {
 		return redUserMapper.selectRedUserByUserKey(userKey);
 	}
+	
+	@Override
+    public int deleteRedUserByUserKey(String userKey)
+    {
+        return redUserMapper.deleteRedUserByUserKey(userKey);
+    }
 }

@@ -94,10 +94,11 @@ public class CaptchaController
         	RedCaptcha captcha = new RedCaptcha();
             captcha.setCaptchaKey(verifyKey);
             captcha.setCaptchaCode(code);
-            Date expirationTime = DateUtils.getNowDate();
-            captcha.setCreateTime(expirationTime);
             captcha.setCaptchaExpiration(Constants.CAPTCHA_EXPIRATION);
             captcha.setCaptchaUtil(TimeUnit.MINUTES.toString());
+            Date expreationTime = DateUtils.getNowDate();
+            expreationTime = DateUtils.addMinutes(expreationTime, Constants.CAPTCHA_EXPIRATION);
+            captcha.setExpreationTime(expreationTime);
             redCaptchaService.insertRedCaptcha(captcha);
         }else {
         	redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);

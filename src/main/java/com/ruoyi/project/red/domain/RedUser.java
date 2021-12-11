@@ -18,6 +18,10 @@ public class RedUser extends BaseEntity
     private static final long serialVersionUID = 1L;
 
     /** 缓存ID */
+    private Long redUserId;
+
+
+    /** 用户ID */
     private Long userId;
 
     /** 缓存KEY */
@@ -49,7 +53,15 @@ public class RedUser extends BaseEntity
     @Excel(name = "超期时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date expreationTime;
 
-    public void setUserId(Long userId) 
+    public Long getRedUserId() {
+        return redUserId;
+    }
+
+    public void setRedUserId(Long redUserId) {
+        this.redUserId = redUserId;
+    }
+
+    public void setUserId(Long userId)
     {
         this.userId = userId;
     }
@@ -125,6 +137,7 @@ public class RedUser extends BaseEntity
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+                .append("RedUserId", getRedUserId())
             .append("userId", getUserId())
             .append("userKey", getUserKey())
             .append("sysuser", getSysuser())

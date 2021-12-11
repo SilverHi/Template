@@ -5,6 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.project.red.mapper.RedUserMapper">
     
     <resultMap type="RedUser" id="RedUserResult">
+        <result property="redUserId"    column="reduser_id"    />
         <result property="userId"    column="user_id"    />
         <result property="userKey"    column="user_key"    />
         <result property="sysuser"    column="sysuser"    />
@@ -18,12 +19,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectRedUserVo">
-        select user_id, user_key, sysuser, logininfo, permissions, captcha_expiration, captcha_util, create_by, create_time, expreation_time from red_user
+        select reduser_id, user_id, user_key, sysuser, logininfo, permissions, captcha_expiration, captcha_util, create_by, create_time, expreation_time from red_user
     </sql>
 
     <select id="selectRedUserList" parameterType="RedUser" resultMap="RedUserResult">
         <include refid="selectRedUserVo"/>
-        <where>  
+        <where>
+            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>
             <if test="userKey != null  and userKey != ''"> and user_key = #{userKey}</if>
             <if test="sysuser != null  and sysuser != ''"> and sysuser = #{sysuser}</if>
             <if test="logininfo != null  and logininfo != ''"> and logininfo = #{logininfo}</if>
@@ -33,7 +35,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="expreationTime != null "> and expreation_time = #{expreationTime}</if>
         </where>
     </select>
-    
+
+    <select id="selectRedUserById" parameterType="Long" resultMap="RedUserResult">
+        <include refid="selectRedUserVo"/>
+        where reduser_id = #{redUserId}
+    </select>
+
     <select id="selectRedUserByUserId" parameterType="Long" resultMap="RedUserResult">
         <include refid="selectRedUserVo"/>
         where user_id = #{userId}
@@ -47,6 +54,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <insert id="insertRedUser" parameterType="RedUser" useGeneratedKeys="true" keyProperty="userId">
         insert into red_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
             <if test="userKey != null">user_key,</if>
             <if test="sysuser != null">sysuser,</if>
             <if test="logininfo != null">logininfo,</if>
@@ -58,6 +66,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="expreationTime != null">expreation_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
             <if test="userKey != null">#{userKey},</if>
             <if test="sysuser != null">#{sysuser},</if>
             <if test="logininfo != null">#{logininfo},</if>
@@ -73,6 +82,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateRedUser" parameterType="RedUser">
         update red_user
         <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_key = #{userId},</if>
             <if test="userKey != null">user_key = #{userKey},</if>
             <if test="sysuser != null">sysuser = #{sysuser},</if>
             <if test="logininfo != null">logininfo = #{logininfo},</if>

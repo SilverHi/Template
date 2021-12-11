@@ -113,16 +113,18 @@ public class SysLoginService
     public void validateCaptcha(String username, String code, String uuid)
     {
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
-        String captcha = "";
+        String captcha = null;
         if(enabledRedis) {
         	captcha = redisCache.getCacheObject(verifyKey);
         	redisCache.deleteObject(verifyKey);
         }else {
         	RedCaptcha redCaptcha = redCaptchaService.selectRedCaptchaByCaptchaKey(verifyKey);
         	if(null!=redCaptcha) {
-        		captcha = redCaptcha.getCaptchaCode();
-        		redCaptchaService.deleteRedCaptchaByCaptchaId(redCaptcha.getCaptchaId());
-        	}
+                if (DateUtils.getNowDate().compareTo(redCaptcha.getExpreationTime()) < 0) {
+                    captcha = redCaptcha.getCaptchaCode();
+                }
+                redCaptchaService.deleteRedCaptchaByCaptchaId(redCaptcha.getCaptchaId());
+            }
         }
         
         if (captcha == null)

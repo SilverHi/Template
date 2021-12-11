@@ -120,7 +120,7 @@ public class SysLoginService
         }else {
         	RedCaptcha redCaptcha = redCaptchaService.selectRedCaptchaByCaptchaKey(verifyKey);
         	if(null!=redCaptcha) {
-                if (DateUtils.getNowDate().compareTo(redCaptcha.getExpreationTime()) < 0) {
+                if (DateUtils.getNowDate().before(redCaptcha.getExpreationTime())) {
                     captcha = redCaptcha.getCaptchaCode();
                 }
                 redCaptchaService.deleteRedCaptchaByCaptchaId(redCaptcha.getCaptchaId());

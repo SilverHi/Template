@@ -15,6 +15,7 @@ create table red_captcha (
 drop table if exists red_user;
 create table red_user (
   user_id           bigint(20)        not null auto_increment    comment '缓存ID',
+  reduser_id        varchar(200)        default ''               comment '用户ID',
   user_key          varchar(50)       default ''                 comment '缓存KEY',
   sysuser           varchar(250)      default ''                 comment '缓存用户信息',
   logininfo         varchar(250)      default ''                 comment '缓存登录信息',

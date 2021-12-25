@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.cms.mapper.CmsSitesMapper">
+    
+    <resultMap type="CmsSites" id="CmsSitesResult">
+        <result property="id"    column="Id"    />
+        <result property="guid"    column="guid"    />
+        <result property="extendvalues"    column="extendValues"    />
+        <result property="sitedir"    column="siteDir"    />
+        <result property="sitename"    column="siteName"    />
+        <result property="sitetype"    column="siteType"    />
+        <result property="imageurl"    column="imageUrl"    />
+        <result property="keywords"    column="keywords"    />
+        <result property="description"    column="description"    />
+        <result property="tablename"    column="tableName"    />
+        <result property="root"    column="root"    />
+        <result property="parentid"    column="parentId"    />
+        <result property="ordernum"    column="OrderNum"    />
+        <result property="creationtime"    column="CreationTime"    />
+        <result property="creatoruserid"    column="CreatorUserId"    />
+        <result property="lastmodificationtime"    column="LastModificationTime"    />
+        <result property="lastmodifieruserid"    column="LastModifierUserId"    />
+        <result property="isdeleted"    column="IsDeleted"    />
+        <result property="deleteruserid"    column="DeleterUserId"    />
+        <result property="deletiontime"    column="DeletionTime"    />
+    </resultMap>
+
+    <sql id="selectCmsSitesVo">
+        select Id, guid, extendValues, siteDir, siteName, siteType, imageUrl, keywords, description, tableName, root, parentId, OrderNum, CreationTime, CreatorUserId, LastModificationTime, LastModifierUserId, IsDeleted, DeleterUserId, DeletionTime from cms_sites
+    </sql>
+
+    <select id="selectCmsSitesList" parameterType="CmsSites" resultMap="CmsSitesResult">
+        <include refid="selectCmsSitesVo"/>
+        <where>  
+            <if test="guid != null  and guid != ''"> and guid = #{guid}</if>
+            <if test="extendvalues != null  and extendvalues != ''"> and extendValues = #{extendvalues}</if>
+            <if test="sitedir != null  and sitedir != ''"> and siteDir = #{sitedir}</if>
+            <if test="sitename != null  and sitename != ''"> and siteName like concat('%', #{sitename}, '%')</if>
+            <if test="sitetype != null  and sitetype != ''"> and siteType = #{sitetype}</if>
+            <if test="imageurl != null  and imageurl != ''"> and imageUrl = #{imageurl}</if>
+            <if test="keywords != null  and keywords != ''"> and keywords = #{keywords}</if>
+            <if test="description != null  and description != ''"> and description = #{description}</if>
+            <if test="tablename != null  and tablename != ''"> and tableName like concat('%', #{tablename}, '%')</if>
+            <if test="root != null  and root != ''"> and root = #{root}</if>
+            <if test="parentid != null "> and parentId = #{parentid}</if>
+            <if test="ordernum != null "> and OrderNum = #{ordernum}</if>
+            <if test="creationtime != null "> and CreationTime = #{creationtime}</if>
+            <if test="creatoruserid != null "> and CreatorUserId = #{creatoruserid}</if>
+            <if test="lastmodificationtime != null "> and LastModificationTime = #{lastmodificationtime}</if>
+            <if test="lastmodifieruserid != null "> and LastModifierUserId = #{lastmodifieruserid}</if>
+            <if test="isdeleted != null "> and IsDeleted = #{isdeleted}</if>
+            <if test="deleteruserid != null "> and DeleterUserId = #{deleteruserid}</if>
+            <if test="deletiontime != null "> and DeletionTime = #{deletiontime}</if>
+        </where>
+    </select>
+    
+    <select id="selectCmsSitesById" parameterType="Long" resultMap="CmsSitesResult">
+        <include refid="selectCmsSitesVo"/>
+        where Id = #{id}
+    </select>
+        
+    <insert id="insertCmsSites" parameterType="CmsSites" useGeneratedKeys="true" keyProperty="id">
+        insert into cms_sites
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="guid != null">guid,</if>
+            <if test="extendvalues != null">extendValues,</if>
+            <if test="sitedir != null">siteDir,</if>
+            <if test="sitename != null">siteName,</if>
+            <if test="sitetype != null">siteType,</if>
+            <if test="imageurl != null">imageUrl,</if>
+            <if test="keywords != null">keywords,</if>
+            <if test="description != null">description,</if>
+            <if test="tablename != null">tableName,</if>
+            <if test="root != null and root != ''">root,</if>
+            <if test="parentid != null">parentId,</if>
+            <if test="ordernum != null">OrderNum,</if>
+            <if test="creationtime != null">CreationTime,</if>
+            <if test="creatoruserid != null">CreatorUserId,</if>
+            <if test="lastmodificationtime != null">LastModificationTime,</if>
+            <if test="lastmodifieruserid != null">LastModifierUserId,</if>
+            <if test="isdeleted != null">IsDeleted,</if>
+            <if test="deleteruserid != null">DeleterUserId,</if>
+            <if test="deletiontime != null">DeletionTime,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="guid != null">#{guid},</if>
+            <if test="extendvalues != null">#{extendvalues},</if>
+            <if test="sitedir != null">#{sitedir},</if>
+            <if test="sitename != null">#{sitename},</if>
+            <if test="sitetype != null">#{sitetype},</if>
+            <if test="imageurl != null">#{imageurl},</if>
+            <if test="keywords != null">#{keywords},</if>
+            <if test="description != null">#{description},</if>
+            <if test="tablename != null">#{tablename},</if>
+            <if test="root != null and root != ''">#{root},</if>
+            <if test="parentid != null">#{parentid},</if>
+            <if test="ordernum != null">#{ordernum},</if>
+            <if test="creationtime != null">#{creationtime},</if>
+            <if test="creatoruserid != null">#{creatoruserid},</if>
+            <if test="lastmodificationtime != null">#{lastmodificationtime},</if>
+            <if test="lastmodifieruserid != null">#{lastmodifieruserid},</if>
+            <if test="isdeleted != null">#{isdeleted},</if>
+            <if test="deleteruserid != null">#{deleteruserid},</if>
+            <if test="deletiontime != null">#{deletiontime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCmsSites" parameterType="CmsSites">
+        update cms_sites
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="guid != null">guid = #{guid},</if>
+            <if test="extendvalues != null">extendValues = #{extendvalues},</if>
+            <if test="sitedir != null">siteDir = #{sitedir},</if>
+            <if test="sitename != null">siteName = #{sitename},</if>
+            <if test="sitetype != null">siteType = #{sitetype},</if>
+            <if test="imageurl != null">imageUrl = #{imageurl},</if>
+            <if test="keywords != null">keywords = #{keywords},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="tablename != null">tableName = #{tablename},</if>
+            <if test="root != null and root != ''">root = #{root},</if>
+            <if test="parentid != null">parentId = #{parentid},</if>
+            <if test="ordernum != null">OrderNum = #{ordernum},</if>
+            <if test="creationtime != null">CreationTime = #{creationtime},</if>
+            <if test="creatoruserid != null">CreatorUserId = #{creatoruserid},</if>
+            <if test="lastmodificationtime != null">LastModificationTime = #{lastmodificationtime},</if>
+            <if test="lastmodifieruserid != null">LastModifierUserId = #{lastmodifieruserid},</if>
+            <if test="isdeleted != null">IsDeleted = #{isdeleted},</if>
+            <if test="deleteruserid != null">DeleterUserId = #{deleteruserid},</if>
+            <if test="deletiontime != null">DeletionTime = #{deletiontime},</if>
+        </trim>
+        where Id = #{id}
+    </update>
+
+    <delete id="deleteCmsSitesById" parameterType="Long">
+        delete from cms_sites where Id = #{id}
+    </delete>
+
+    <delete id="deleteCmsSitesByIds" parameterType="String">
+        delete from cms_sites where Id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,4 +1,4 @@
---验证码
+--- 验证码
 drop table if exists red_captcha;
 create table red_captcha (
   captcha_id           bigint(20)      not null auto_increment    comment '验证码id',
@@ -26,4 +26,4 @@ create table red_user (
   create_time 	    datetime                                   comment '创建时间',
   expreation_time   datetime                                   comment '超期时间',
   primary key (user_id)
-) engine=innodb auto_increment=200 comment = '验证码表';
+) engine=innodb auto_increment=200 comment = '登录用户表';

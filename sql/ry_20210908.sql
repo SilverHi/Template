@@ -161,7 +161,7 @@ insert into sys_menu values('1', '系统管理', '0', '1', 'system',           n
 insert into sys_menu values('2', '系统监控', '0', '2', 'monitor',          null, '', 1, 0, 'M', '0', '0', '', 'monitor',  'admin', sysdate(), '', null, '系统监控目录');
 insert into sys_menu values('3', '系统工具', '0', '3', 'tool',             null, '', 1, 0, 'M', '0', '0', '', 'tool',     'admin', sysdate(), '', null, '系统工具目录');
 insert into sys_menu values('4', '若依官网', '0', '4', 'http://ruoyi.vip', null, '', 0, 0, 'M', '0', '0', '', 'guide',    'admin', sysdate(), '', null, '若依官网地址');
-insert into sys_menu values('5', '内容管理', '0', '5', 'conent',             null, '', 1, 0, 'M', '0', '0', '', 'conent',     'admin', sysdate(), '', null, '内容管理');
+insert into sys_menu values('5', '内容管理', '0', '5', 'conent',             null, '', 1, 0, 'M', '0', '0', '', 'code',     'admin', sysdate(), '', null, '内容管理');
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理', '1',   '1', 'user',       'system/user/index',        '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, '用户管理菜单');
 insert into sys_menu values('101',  '角色管理', '1',   '2', 'role',       'system/role/index',        '', 1, 0, 'C', '0', '0', 'system:role:list',        'peoples',       'admin', sysdate(), '', null, '角色管理菜单');
@@ -180,8 +180,8 @@ insert into sys_menu values('113',  '缓存监控', '2',   '5', 'cache',      'm
 insert into sys_menu values('114',  '表单构建', '3',   '1', 'build',      'tool/build/index',         '', 1, 0, 'C', '0', '0', 'tool:build:list',         'build',         'admin', sysdate(), '', null, '表单构建菜单');
 insert into sys_menu values('115',  '代码生成', '3',   '2', 'gen',        'tool/gen/index',           '', 1, 0, 'C', '0', '0', 'tool:gen:list',           'code',          'admin', sysdate(), '', null, '代码生成菜单');
 insert into sys_menu values('116',  '系统接口', '3',   '3', 'swagger',    'tool/swagger/index',       '', 1, 0, 'C', '0', '0', 'tool:swagger:list',       'swagger',       'admin', sysdate(), '', null, '系统接口菜单');
-insert into sys_menu values('117',  '内容分类', '5',   '1', 'content',    'content/category/index',       '', 1, 0, 'C', '0', '0', 'content:category:list',       'category',       'admin', sysdate(), '', null, '内容分类菜单');
-insert into sys_menu values('118',  '内容管理', '5',   '2', 'content',    'content/content/index',       '', 1, 0, 'C', '0', '0', 'content:content:list',       'content',       'admin', sysdate(), '', null, '内容管理菜单');
+insert into sys_menu values('117',  '内容分类', '5',   '1', 'content',    'content/category/index',       '', 1, 0, 'C', '0', '0', 'content:category:list',       'message',       'admin', sysdate(), '', null, '内容分类菜单');
+insert into sys_menu values('118',  '内容管理', '5',   '2', 'content',    'content/content/index',       '', 1, 0, 'C', '0', '0', 'content:content:list',       'code',       'admin', sysdate(), '', null, '内容管理菜单');
 
 
 -- 三级菜单

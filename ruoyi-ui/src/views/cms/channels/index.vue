@@ -178,8 +178,8 @@
 
     <el-table v-loading="loading" :data="channelsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="${comment}" align="center" prop="id" />
-      <el-table-column label="GUID" align="center" prop="guid" />
+      <el-table-column label="id" align="center" prop="id" />
+       
       <el-table-column label="扩展内容" align="center" prop="extendvalues" />
       <el-table-column label="频道名称" align="center" prop="channelname" />
       <el-table-column label="所属站点" align="center" prop="siteid" />
@@ -253,12 +253,8 @@
     <!-- 添加或修改频道对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="GUID" prop="guid">
-          <el-input v-model="form.guid" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
-        <el-form-item label="扩展内容" prop="extendvalues">
-          <el-input v-model="form.extendvalues" type="textarea" placeholder="请输入内容" />
-        </el-form-item>
+        
+       
         <el-form-item label="频道名称" prop="channelname">
           <el-input v-model="form.channelname" type="textarea" placeholder="请输入内容" />
         </el-form-item>
@@ -322,42 +318,10 @@
         <el-form-item label="排序" prop="ordernum">
           <el-input v-model="form.ordernum" placeholder="请输入排序" />
         </el-form-item>
-        <el-form-item label="创建时间" prop="creationtime">
-          <el-date-picker clearable size="small"
-            v-model="form.creationtime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择创建时间">
-          </el-date-picker>
+         <el-form-item label="扩展内容" prop="extendvalues">
+          <el-input v-model="form.extendvalues" type="textarea" placeholder="请输入内容" />
         </el-form-item>
-        <el-form-item label="创建人" prop="creatoruserid">
-          <el-input v-model="form.creatoruserid" placeholder="请输入创建人" />
-        </el-form-item>
-        <el-form-item label="最后修改时间" prop="lastmodificationtime">
-          <el-date-picker clearable size="small"
-            v-model="form.lastmodificationtime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择最后修改时间">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="最后修改人" prop="lastmodifieruserid">
-          <el-input v-model="form.lastmodifieruserid" placeholder="请输入最后修改人" />
-        </el-form-item>
-        <el-form-item label="是否删除" prop="isdeleted">
-          <el-input v-model="form.isdeleted" placeholder="请输入是否删除" />
-        </el-form-item>
-        <el-form-item label="删除人" prop="deleteruserid">
-          <el-input v-model="form.deleteruserid" placeholder="请输入删除人" />
-        </el-form-item>
-        <el-form-item label="删除时间" prop="deletiontime">
-          <el-date-picker clearable size="small"
-            v-model="form.deletiontime"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择删除时间">
-          </el-date-picker>
-        </el-form-item>
+         
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -510,13 +474,13 @@ export default {
         contenttemplateid: null,
         keywords: null,
         description: null,
-        ordernum: null,
+        ordernum: 99,
         creationtime: null,
-        creatoruserid: null,
+        creatoruserid: 0,
         lastmodificationtime: null,
-        lastmodifieruserid: null,
-        isdeleted: null,
-        deleteruserid: null,
+        lastmodifieruserid: 0,
+        isdeleted: 0,
+        deleteruserid: 0,
         deletiontime: null
       };
       this.resetForm("form");

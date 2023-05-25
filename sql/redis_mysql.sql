@@ -1,4 +1,4 @@
---- 验证码
+# --- 验证码
 drop table if exists red_captcha;
 create table red_captcha (
   captcha_id           bigint(20)      not null auto_increment    comment '验证码id',
@@ -17,7 +17,7 @@ create table red_user (
   user_id           bigint(20)        not null auto_increment    comment '缓存ID',
   reduser_id        varchar(200)        default ''               comment '用户ID',
   user_key          varchar(50)       default ''                 comment '缓存KEY',
-  sysuser           blob      default ''                 comment '缓存用户信息',
+  sysuser           blob                    comment '缓存用户信息',
   logininfo         varchar(250)      default ''                 comment '缓存登录信息',
   permissions       varchar(250)      default ''                 comment '权限信息',  
   captcha_expiration   int(4)          default 2                  comment '有效期',

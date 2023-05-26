@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.cms.mapper.VcdBorrowReturnMapper">
+    
+    <resultMap type="VcdBorrowReturn" id="VcdBorrowReturnResult">
+        <result property="brId"    column="br_id"    />
+        <result property="brTime"    column="br_time"    />
+        <result property="brNum"    column="br_num"    />
+        <result property="vcdId"    column="vcd_id"    />
+        <result property="borrowerId"    column="borrower_id"    />
+        <result property="returnerId"    column="returner_id"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectVcdBorrowReturnVo">
+        select br_id, br_time, br_num, vcd_id, borrower_id, returner_id, status from vcd_borrow_return
+    </sql>
+
+    <select id="selectVcdBorrowReturnList" parameterType="VcdBorrowReturn" resultMap="VcdBorrowReturnResult">
+        <include refid="selectVcdBorrowReturnVo"/>
+        <where>  
+            <if test="brTime != null "> and br_time = #{brTime}</if>
+            <if test="brNum != null "> and br_num = #{brNum}</if>
+            <if test="vcdId != null "> and vcd_id = #{vcdId}</if>
+            <if test="borrowerId != null "> and borrower_id = #{borrowerId}</if>
+            <if test="returnerId != null "> and returner_id = #{returnerId}</if>
+            <if test="status != null "> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectVcdBorrowReturnByBrId" parameterType="Long" resultMap="VcdBorrowReturnResult">
+        <include refid="selectVcdBorrowReturnVo"/>
+        where br_id = #{brId}
+    </select>
+        
+    <insert id="insertVcdBorrowReturn" parameterType="VcdBorrowReturn" useGeneratedKeys="true" keyProperty="brId">
+        insert into vcd_borrow_return
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="brTime != null">br_time,</if>
+            <if test="brNum != null">br_num,</if>
+            <if test="vcdId != null">vcd_id,</if>
+            <if test="borrowerId != null">borrower_id,</if>
+            <if test="returnerId != null">returner_id,</if>
+            <if test="status != null">status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="brTime != null">#{brTime},</if>
+            <if test="brNum != null">#{brNum},</if>
+            <if test="vcdId != null">#{vcdId},</if>
+            <if test="borrowerId != null">#{borrowerId},</if>
+            <if test="returnerId != null">#{returnerId},</if>
+            <if test="status != null">#{status},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVcdBorrowReturn" parameterType="VcdBorrowReturn">
+        update vcd_borrow_return
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="brTime != null">br_time = #{brTime},</if>
+            <if test="brNum != null">br_num = #{brNum},</if>
+            <if test="vcdId != null">vcd_id = #{vcdId},</if>
+            <if test="borrowerId != null">borrower_id = #{borrowerId},</if>
+            <if test="returnerId != null">returner_id = #{returnerId},</if>
+            <if test="status != null">status = #{status},</if>
+        </trim>
+        where br_id = #{brId}
+    </update>
+
+    <delete id="deleteVcdBorrowReturnByBrId" parameterType="Long">
+        delete from vcd_borrow_return where br_id = #{brId}
+    </delete>
+
+    <delete id="deleteVcdBorrowReturnByBrIds" parameterType="String">
+        delete from vcd_borrow_return where br_id in 
+        <foreach item="brId" collection="array" open="(" separator="," close=")">
+            #{brId}
+        </foreach>
+    </delete>
+</mapper>

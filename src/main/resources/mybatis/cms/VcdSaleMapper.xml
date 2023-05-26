@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.cms.mapper.VcdSaleMapper">
+    
+    <resultMap type="VcdSale" id="VcdSaleResult">
+        <result property="saleId"    column="sale_id"    />
+        <result property="saleTime"    column="sale_time"    />
+        <result property="saleNum"    column="sale_num"    />
+        <result property="vcdId"    column="vcd_id"    />
+        <result property="operatorId"    column="operator_id"    />
+    </resultMap>
+
+    <sql id="selectVcdSaleVo">
+        select sale_id, sale_time, sale_num, vcd_id, operator_id from vcd_sale
+    </sql>
+
+    <select id="selectVcdSaleList" parameterType="VcdSale" resultMap="VcdSaleResult">
+        <include refid="selectVcdSaleVo"/>
+        <where>  
+            <if test="saleTime != null "> and sale_time = #{saleTime}</if>
+            <if test="saleNum != null "> and sale_num = #{saleNum}</if>
+            <if test="vcdId != null "> and vcd_id = #{vcdId}</if>
+            <if test="operatorId != null "> and operator_id = #{operatorId}</if>
+        </where>
+    </select>
+    
+    <select id="selectVcdSaleBySaleId" parameterType="Long" resultMap="VcdSaleResult">
+        <include refid="selectVcdSaleVo"/>
+        where sale_id = #{saleId}
+    </select>
+        
+    <insert id="insertVcdSale" parameterType="VcdSale" useGeneratedKeys="true" keyProperty="saleId">
+        insert into vcd_sale
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="saleTime != null">sale_time,</if>
+            <if test="saleNum != null">sale_num,</if>
+            <if test="vcdId != null">vcd_id,</if>
+            <if test="operatorId != null">operator_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="saleTime != null">#{saleTime},</if>
+            <if test="saleNum != null">#{saleNum},</if>
+            <if test="vcdId != null">#{vcdId},</if>
+            <if test="operatorId != null">#{operatorId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVcdSale" parameterType="VcdSale">
+        update vcd_sale
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="saleTime != null">sale_time = #{saleTime},</if>
+            <if test="saleNum != null">sale_num = #{saleNum},</if>
+            <if test="vcdId != null">vcd_id = #{vcdId},</if>
+            <if test="operatorId != null">operator_id = #{operatorId},</if>
+        </trim>
+        where sale_id = #{saleId}
+    </update>
+
+    <delete id="deleteVcdSaleBySaleId" parameterType="Long">
+        delete from vcd_sale where sale_id = #{saleId}
+    </delete>
+
+    <delete id="deleteVcdSaleBySaleIds" parameterType="String">
+        delete from vcd_sale where sale_id in 
+        <foreach item="saleId" collection="array" open="(" separator="," close=")">
+            #{saleId}
+        </foreach>
+    </delete>
+</mapper>

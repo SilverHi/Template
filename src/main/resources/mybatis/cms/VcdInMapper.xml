@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.cms.mapper.VcdInMapper">
+    
+    <resultMap type="VcdIn" id="VcdInResult">
+        <result property="inId"    column="in_id"    />
+        <result property="inTime"    column="in_time"    />
+        <result property="inNum"    column="in_num"    />
+        <result property="vcdId"    column="vcd_id"    />
+        <result property="operatorId"    column="operator_id"    />
+    </resultMap>
+
+    <sql id="selectVcdInVo">
+        select in_id, in_time, in_num, vcd_id, operator_id from vcd_in
+    </sql>
+
+    <select id="selectVcdInList" parameterType="VcdIn" resultMap="VcdInResult">
+        <include refid="selectVcdInVo"/>
+        <where>  
+            <if test="inTime != null "> and in_time = #{inTime}</if>
+            <if test="inNum != null "> and in_num = #{inNum}</if>
+            <if test="vcdId != null "> and vcd_id = #{vcdId}</if>
+            <if test="operatorId != null "> and operator_id = #{operatorId}</if>
+        </where>
+    </select>
+    
+    <select id="selectVcdInByInId" parameterType="Long" resultMap="VcdInResult">
+        <include refid="selectVcdInVo"/>
+        where in_id = #{inId}
+    </select>
+        
+    <insert id="insertVcdIn" parameterType="VcdIn" useGeneratedKeys="true" keyProperty="inId">
+        insert into vcd_in
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="inTime != null">in_time,</if>
+            <if test="inNum != null">in_num,</if>
+            <if test="vcdId != null">vcd_id,</if>
+            <if test="operatorId != null">operator_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="inTime != null">#{inTime},</if>
+            <if test="inNum != null">#{inNum},</if>
+            <if test="vcdId != null">#{vcdId},</if>
+            <if test="operatorId != null">#{operatorId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateVcdIn" parameterType="VcdIn">
+        update vcd_in
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inTime != null">in_time = #{inTime},</if>
+            <if test="inNum != null">in_num = #{inNum},</if>
+            <if test="vcdId != null">vcd_id = #{vcdId},</if>
+            <if test="operatorId != null">operator_id = #{operatorId},</if>
+        </trim>
+        where in_id = #{inId}
+    </update>
+
+    <delete id="deleteVcdInByInId" parameterType="Long">
+        delete from vcd_in where in_id = #{inId}
+    </delete>
+
+    <delete id="deleteVcdInByInIds" parameterType="String">
+        delete from vcd_in where in_id in 
+        <foreach item="inId" collection="array" open="(" separator="," close=")">
+            #{inId}
+        </foreach>
+    </delete>
+</mapper>

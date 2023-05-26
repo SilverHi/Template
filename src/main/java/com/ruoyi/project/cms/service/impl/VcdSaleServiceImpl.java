@@ -1,6 +1,8 @@
 package com.ruoyi.project.cms.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.cms.mapper.VcdSaleMapper;
@@ -52,6 +54,7 @@ public class VcdSaleServiceImpl implements IVcdSaleService
     @Override
     public int insertVcdSale(VcdSale vcdSale)
     {
+        vcdSale.setOperatorId(SecurityUtils.getUserId());
         return vcdSaleMapper.insertVcdSale(vcdSale);
     }
 

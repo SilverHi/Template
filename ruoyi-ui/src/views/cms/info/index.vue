@@ -1,39 +1,31 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="80px">
       <el-form-item label="VCD名称" prop="vcdName">
         <el-input
           v-model="queryParams.vcdName"
           placeholder="请输入VCD名称"
           clearable
-          size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="VCD类型编号" prop="typeId">
-        <el-input
-          v-model="queryParams.typeId"
-          placeholder="请输入VCD类型编号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="VCD类型" prop="typeId">
+        <el-select v-model="queryParams.typeId" placeholder="请选择VCD类型" 
+        clearable
+          @keyup.enter.native="handleQuery">
+            <el-option
+              v-for="item in typeList"
+              :key="item.typeId"
+              :label="item.typeName"
+              :value="item.typeId"
+            />
+          </el-select>
       </el-form-item>
       <el-form-item label="VCD价格" prop="price">
         <el-input
           v-model="queryParams.price"
           placeholder="请输入VCD价格"
           clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="操作人员编号" prop="operatorId">
-        <el-input
-          v-model="queryParams.operatorId"
-          placeholder="请输入操作人员编号"
-          clearable
-          size="small"
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
@@ -76,16 +68,6 @@
           v-hasPermi="['cms:info:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['cms:info:export']"
-        >导出</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -93,9 +75,10 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="VCD编号" align="center" prop="vcdId" />
       <el-table-column label="VCD名称" align="center" prop="vcdName" />
-      <el-table-column label="VCD类型编号" align="center" prop="typeId" />
+      <el-table-column label="VCD类型" align="center" prop="typeId" :formatter="typemapping" />
       <el-table-column label="VCD价格" align="center" prop="price" />
-      <el-table-column label="操作人员编号" align="center" prop="operatorId" />
+      <el-table-column label="库存数量" align="center" prop="num"  />
+      <el-table-column label="录入人员编号" align="center" prop="operatorId" :formatter="usermaping" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -130,14 +113,18 @@
         <el-form-item label="VCD名称" prop="vcdName">
           <el-input v-model="form.vcdName" placeholder="请输入VCD名称" />
         </el-form-item>
-        <el-form-item label="VCD类型编号" prop="typeId">
-          <el-input v-model="form.typeId" placeholder="请输入VCD类型编号" />
+        <el-form-item label="VCD类型" prop="typeId">
+          <el-select v-model="form.typeId" placeholder="请选择VCD类型">
+            <el-option
+              v-for="item in typeList"
+              :key="item.typeId"
+              :label="item.typeName"
+              :value="item.typeId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="VCD价格" prop="price">
-          <el-input v-model="form.price" placeholder="请输入VCD价格" />
-        </el-form-item>
-        <el-form-item label="操作人员编号" prop="operatorId">
-          <el-input v-model="form.operatorId" placeholder="请输入操作人员编号" />
+          <el-input v-model.number="form.price" placeholder="请输入VCD价格"  />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -150,11 +137,17 @@
 
 <script>
 import { listInfo, getInfo, delInfo, addInfo, updateInfo } from "@/api/cms/info";
+import { listType } from "@/api/cms/type";
+import { listUser } from "@/api/system/user";
 
 export default {
   name: "Info",
   data() {
     return {
+      // 用户列表
+      userList: [],
+      // VCD类型列表
+      typeList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -193,15 +186,48 @@ export default {
           { required: true, message: "VCD类型编号不能为空", trigger: "blur" }
         ],
         price: [
-          { required: true, message: "VCD价格不能为空", trigger: "blur" }
-        ],
+          { required: true, message: "VCD价格不能为空" },
+          { type: "number", message: "价格必须为整数" }
+          ],
       }
     };
   },
   created() {
     this.getList();
+    this.getTypeList();
+    listUser().then(response => {
+        this.userList = response.rows;
+      });
+
   },
   methods: {
+    usermaping(row,column){
+      let userName = '';
+      this.userList.forEach(item => {
+        if (item.userId == row.operatorId) {
+          userName= item.userName;
+        }
+      });
+      return userName;
+    },
+    typemapping(row,column){
+      let typeName = '';
+      this.typeList.forEach(item => {
+        if (item.typeId == row.typeId) {
+          typeName= item.typeName;
+        }
+      });
+      return typeName;
+    },
+
+
+    /** 获取VCD类型列表 */
+    getTypeList() {
+      listType().then(response => {
+        this.typeList = response.rows;
+      });
+    },
+
     /** 查询VCD信息列表 */
     getList() {
       this.loading = true;

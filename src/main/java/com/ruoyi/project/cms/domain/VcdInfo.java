@@ -8,9 +8,9 @@ import com.ruoyi.framework.web.domain.BaseEntity;
 
 /**
  * VCD信息对象 vcd_info
- * 
+ *
  * @author ruoyi
- * @date 2023-05-25
+ * @date 2023-05-26
  */
 public class VcdInfo extends BaseEntity
 {
@@ -35,60 +35,74 @@ public class VcdInfo extends BaseEntity
     @Excel(name = "操作人员编号")
     private Long operatorId;
 
-    public void setVcdId(Long vcdId) 
+    /** 库存数量 */
+    @Excel(name = "库存数量")
+    private Long num;
+
+    public void setVcdId(Long vcdId)
     {
         this.vcdId = vcdId;
     }
 
-    public Long getVcdId() 
+    public Long getVcdId()
     {
         return vcdId;
     }
-    public void setVcdName(String vcdName) 
+    public void setVcdName(String vcdName)
     {
         this.vcdName = vcdName;
     }
 
-    public String getVcdName() 
+    public String getVcdName()
     {
         return vcdName;
     }
-    public void setTypeId(Long typeId) 
+    public void setTypeId(Long typeId)
     {
         this.typeId = typeId;
     }
 
-    public Long getTypeId() 
+    public Long getTypeId()
     {
         return typeId;
     }
-    public void setPrice(BigDecimal price) 
+    public void setPrice(BigDecimal price)
     {
         this.price = price;
     }
 
-    public BigDecimal getPrice() 
+    public BigDecimal getPrice()
     {
         return price;
     }
-    public void setOperatorId(Long operatorId) 
+    public void setOperatorId(Long operatorId)
     {
         this.operatorId = operatorId;
     }
 
-    public Long getOperatorId() 
+    public Long getOperatorId()
     {
         return operatorId;
+    }
+    public void setNum(Long num)
+    {
+        this.num = num;
+    }
+
+    public Long getNum()
+    {
+        return num;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("vcdId", getVcdId())
-            .append("vcdName", getVcdName())
-            .append("typeId", getTypeId())
-            .append("price", getPrice())
-            .append("operatorId", getOperatorId())
-            .toString();
+                .append("vcdId", getVcdId())
+                .append("vcdName", getVcdName())
+                .append("typeId", getTypeId())
+                .append("price", getPrice())
+                .append("operatorId", getOperatorId())
+                .append("num", getNum())
+                .toString();
     }
 }

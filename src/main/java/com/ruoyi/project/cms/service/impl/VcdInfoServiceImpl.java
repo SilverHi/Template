@@ -1,6 +1,8 @@
 package com.ruoyi.project.cms.service.impl;
 
 import java.util.List;
+
+import com.ruoyi.common.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.project.cms.mapper.VcdInfoMapper;
@@ -52,6 +54,8 @@ public class VcdInfoServiceImpl implements IVcdInfoService
     @Override
     public int insertVcdInfo(VcdInfo vcdInfo)
     {
+        //获取当前用户id
+        vcdInfo.setOperatorId(SecurityUtils.getUserId());
         return vcdInfoMapper.insertVcdInfo(vcdInfo);
     }
 

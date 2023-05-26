@@ -1,36 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.cms.mapper.VcdInfoMapper">
-    
+
     <resultMap type="VcdInfo" id="VcdInfoResult">
         <result property="vcdId"    column="vcd_id"    />
         <result property="vcdName"    column="vcd_name"    />
         <result property="typeId"    column="type_id"    />
         <result property="price"    column="price"    />
         <result property="operatorId"    column="operator_id"    />
+        <result property="num"    column="num"    />
     </resultMap>
 
     <sql id="selectVcdInfoVo">
-        select vcd_id, vcd_name, type_id, price, operator_id from vcd_info
+        select vcd_id, vcd_name, type_id, price, operator_id, num from vcd_info
     </sql>
 
     <select id="selectVcdInfoList" parameterType="VcdInfo" resultMap="VcdInfoResult">
         <include refid="selectVcdInfoVo"/>
-        <where>  
+        <where>
             <if test="vcdName != null  and vcdName != ''"> and vcd_name like concat('%', #{vcdName}, '%')</if>
             <if test="typeId != null "> and type_id = #{typeId}</if>
             <if test="price != null "> and price = #{price}</if>
             <if test="operatorId != null "> and operator_id = #{operatorId}</if>
+            <if test="num != null "> and num = #{num}</if>
         </where>
     </select>
-    
+
     <select id="selectVcdInfoByVcdId" parameterType="Long" resultMap="VcdInfoResult">
         <include refid="selectVcdInfoVo"/>
         where vcd_id = #{vcdId}
     </select>
-        
+
     <insert id="insertVcdInfo" parameterType="VcdInfo" useGeneratedKeys="true" keyProperty="vcdId">
         insert into vcd_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -38,13 +40,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="typeId != null">type_id,</if>
             <if test="price != null">price,</if>
             <if test="operatorId != null">operator_id,</if>
-         </trim>
+            <if test="num != null">num,</if>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="vcdName != null and vcdName != ''">#{vcdName},</if>
             <if test="typeId != null">#{typeId},</if>
             <if test="price != null">#{price},</if>
             <if test="operatorId != null">#{operatorId},</if>
-         </trim>
+            <if test="num != null">#{num},</if>
+        </trim>
     </insert>
 
     <update id="updateVcdInfo" parameterType="VcdInfo">
@@ -54,6 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="typeId != null">type_id = #{typeId},</if>
             <if test="price != null">price = #{price},</if>
             <if test="operatorId != null">operator_id = #{operatorId},</if>
+            <if test="num != null">num = #{num},</if>
         </trim>
         where vcd_id = #{vcdId}
     </update>
@@ -63,7 +68,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </delete>
 
     <delete id="deleteVcdInfoByVcdIds" parameterType="String">
-        delete from vcd_info where vcd_id in 
+        delete from vcd_info where vcd_id in
         <foreach item="vcdId" collection="array" open="(" separator="," close=")">
             #{vcdId}
         </foreach>

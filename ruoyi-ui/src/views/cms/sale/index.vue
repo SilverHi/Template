@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="80px">
       <el-form-item label="销售时间" prop="saleTime">
         <el-date-picker clearable size="small"
           v-model="queryParams.saleTime"
@@ -18,23 +18,25 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="VCD编号" prop="vcdId">
-        <el-input
-          v-model="queryParams.vcdId"
-          placeholder="请输入VCD编号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="VCD名称" prop="vcdId">
+        <el-select v-model="queryParams.vcdId" placeholder="请选择VCD编号" clearable size="small" @keyup.enter.native="handleQuery">
+          <el-option
+            v-for="item in vcdList"
+            :key="item.vcdId"
+            :label="item.vcdName"
+            :value="item.vcdId"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="操作人员编号" prop="operatorId">
-        <el-input
-          v-model="queryParams.operatorId"
-          placeholder="请输入操作人员编号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="操作人员" prop="operatorId">
+        <el-select v-model="queryParams.operatorId" placeholder="请选择操作人员" clearable size="small" @keyup.enter.native="handleQuery">
+          <el-option
+            v-for="item in userList"
+            :key="item.userId"
+            :label="item.userName"
+            :value="item.userId"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -75,16 +77,6 @@
           v-hasPermi="['cms:sale:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['cms:sale:export']"
-        >导出</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -97,8 +89,8 @@
         </template>
       </el-table-column>
       <el-table-column label="销售数量" align="center" prop="saleNum" />
-      <el-table-column label="VCD编号" align="center" prop="vcdId" />
-      <el-table-column label="操作人员编号" align="center" prop="operatorId" />
+      <el-table-column label="VCD名称" align="center" prop="vcdId" :formatter="vcdmaping"/>
+      <el-table-column label="操作人员" align="center" prop="operatorId" :formatter="usermaping"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -130,6 +122,16 @@
     <!-- 添加或修改零售管理对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+        <el-form-item label="VCD编号" prop="vcdId">
+          <el-select v-model="form.vcdId" placeholder="请选择VCD编号" >
+          <el-option
+            v-for="item in vcdList"
+            :key="item.vcdId"
+            :label="item.vcdName"
+            :value="item.vcdId"
+          />
+        </el-select>
+        </el-form-item>
         <el-form-item label="销售时间" prop="saleTime">
           <el-date-picker clearable size="small"
             v-model="form.saleTime"
@@ -139,14 +141,9 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="销售数量" prop="saleNum">
-          <el-input v-model="form.saleNum" placeholder="请输入销售数量" />
+          <el-input v-model.number="form.saleNum" placeholder="请输入销售数量" />
         </el-form-item>
-        <el-form-item label="VCD编号" prop="vcdId">
-          <el-input v-model="form.vcdId" placeholder="请输入VCD编号" />
-        </el-form-item>
-        <el-form-item label="操作人员编号" prop="operatorId">
-          <el-input v-model="form.operatorId" placeholder="请输入操作人员编号" />
-        </el-form-item>
+        
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -158,11 +155,16 @@
 
 <script>
 import { listSale, getSale, delSale, addSale, updateSale } from "@/api/cms/sale";
-
+import { listInfo } from "@/api/cms/info";
+import { listUser } from "@/api/system/user";
 export default {
   name: "Sale",
   data() {
     return {
+      //用户列表
+      userList: [],
+      // VCD列表
+      vcdList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -198,7 +200,8 @@ export default {
           { required: true, message: "销售时间不能为空", trigger: "blur" }
         ],
         saleNum: [
-          { required: true, message: "销售数量不能为空", trigger: "blur" }
+          { required: true, message: "销售数量不能为空", trigger: "blur" },
+          { type: "number", message: "销售数量必须为数字" }
         ],
         vcdId: [
           { required: true, message: "VCD编号不能为空", trigger: "blur" }
@@ -208,8 +211,38 @@ export default {
   },
   created() {
     this.getList();
+    this.getVcdList();
+    listUser().then(response => {
+        this.userList = response.rows;
+      });
   },
   methods: {
+    vcdmaping(row,column){
+      let vcdName = '';
+      this.vcdList.forEach(item => {
+        if (item.vcdId == row.vcdId) {
+          vcdName= item.vcdName;
+        }
+      });
+      return vcdName;
+    },
+    usermaping(row,column){
+      let userName = '';
+      this.userList.forEach(item => {
+        if (item.userId == row.operatorId) {
+          userName= item.userName;
+        }
+      });
+      return userName;
+    },
+    /** 获取VCD列表 */
+    getVcdList() {
+      this.loading = true;
+      listInfo({ pageNum: 1, pageSize: 100 }).then(response => {
+        this.vcdList = response.rows;
+        this.loading = false;
+      });
+    },
     /** 查询零售管理列表 */
     getList() {
       this.loading = true;

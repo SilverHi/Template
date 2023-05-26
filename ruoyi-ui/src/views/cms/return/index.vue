@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="68px">
+    <el-form :model="queryParams" ref="queryForm" :inline="true" v-show="showSearch" label-width="80px">
       <el-form-item label="借还时间" prop="brTime">
         <el-date-picker clearable size="small"
           v-model="queryParams.brTime"
@@ -18,32 +18,35 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="VCD编号" prop="vcdId">
-        <el-input
-          v-model="queryParams.vcdId"
-          placeholder="请输入VCD编号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="VCD名称" prop="vcdId">
+        <el-select v-model="queryParams.vcdId" placeholder="请选择VCD" clearable size="small" @keyup.enter.native="handleQuery">
+          <el-option
+            v-for="item in vcdList"
+            :key="item.vcdId"
+            :label="item.vcdName"
+            :value="item.vcdId"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="借出人员编号" prop="borrowerId">
-        <el-input
-          v-model="queryParams.borrowerId"
-          placeholder="请输入借出人员编号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="借出人" prop="borrowerId">
+        <el-select v-model="queryParams.borrowerId" placeholder="请选择借出人" clearable size="small" @keyup.enter.native="handleQuery">
+          <el-option
+            v-for="item in userList"
+            :key="item.userId"
+            :label="item.userName"
+            :value="item.userId"
+          />
+        </el-select>
       </el-form-item>
-      <el-form-item label="归还人员编号" prop="returnerId">
-        <el-input
-          v-model="queryParams.returnerId"
-          placeholder="请输入归还人员编号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
+      <el-form-item label="归还人" prop="returnerId">
+        <el-select v-model="queryParams.returnerId" placeholder="请选择归还人" clearable size="small" @keyup.enter.native="handleQuery">
+          <el-option
+            v-for="item in userList"
+            :key="item.userId"
+            :label="item.userName"
+            :value="item.userId"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -84,16 +87,6 @@
           v-hasPermi="['cms:return:remove']"
         >删除</el-button>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-          v-hasPermi="['cms:return:export']"
-        >导出</el-button>
-      </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
@@ -106,10 +99,10 @@
         </template>
       </el-table-column>
       <el-table-column label="借还数量" align="center" prop="brNum" />
-      <el-table-column label="VCD编号" align="center" prop="vcdId" />
-      <el-table-column label="借出人员编号" align="center" prop="borrowerId" />
-      <el-table-column label="归还人员编号" align="center" prop="returnerId" />
-      <el-table-column label="借还状态，0表示借出，1表示归还" align="center" prop="status" />
+      <el-table-column label="VCD名称" align="center" prop="vcdId" :formatter="vcdmaping"/>
+      <el-table-column label="借出人" align="center" prop="borrowerId"  :formatter="usermaping"/>
+      <el-table-column label="归还人" align="center" prop="returnerId"  :formatter="usermaping2"/>
+      <el-table-column label="借还状态" align="center" prop="status" :formatter="statusmaping"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -150,17 +143,48 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item label="借还数量" prop="brNum">
-          <el-input v-model="form.brNum" placeholder="请输入借还数量" />
+          <el-input v-model.number="form.brNum" placeholder="请输入借还数量" />
         </el-form-item>
-        <el-form-item label="VCD编号" prop="vcdId">
-          <el-input v-model="form.vcdId" placeholder="请输入VCD编号" />
+        <el-form-item label="VCD名称" prop="vcdId">
+          <el-select v-model="form.vcdId" placeholder="请选择VCD" >
+          <el-option
+            v-for="item in vcdList"
+            :key="item.vcdId"
+            :label="item.vcdName"
+            :value="item.vcdId"
+          />
+        </el-select>
         </el-form-item>
-        <el-form-item label="借出人员编号" prop="borrowerId">
-          <el-input v-model="form.borrowerId" placeholder="请输入借出人员编号" />
+        <el-form-item label="借出人" prop="borrowerId">
+          <el-select v-model="form.borrowerId" clearable placeholder="请选择借出人" >
+            <el-option
+            v-for="item in userList"
+            :key="item.userId"
+            :label="item.userName"
+            :value="item.userId"
+          />
+        </el-select>
         </el-form-item>
-        <el-form-item label="归还人员编号" prop="returnerId">
-          <el-input v-model="form.returnerId" placeholder="请输入归还人员编号" />
+        <el-form-item label="归还人" prop="returnerId">
+          <el-select v-model="form.returnerId" clearable placeholder="请选择归还人" >
+            <el-option
+            v-for="item in userList"
+            :key="item.userId"
+            :label="item.userName"
+            :value="item.userId"
+          />
+        </el-select>
         </el-form-item>
+      <el-form-item label="借还状态" prop="status">
+        <el-select v-model="form.status" placeholder="请选择借还状态" >
+          <el-option
+            v-for="item in statusList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -172,11 +196,21 @@
 
 <script>
 import { listReturn, getReturn, delReturn, addReturn, updateReturn } from "@/api/cms/return";
-
+import { listInfo } from "@/api/cms/info";
+import { listUser } from "@/api/system/user";
 export default {
   name: "Return",
   data() {
     return {
+      //借还状态
+      statusList: [
+        { label: "借出", value: 0 },
+        { label: "归还", value: 1 }
+      ],
+      //用户列表
+      userList: [],
+      // VCD列表
+      vcdList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -214,10 +248,11 @@ export default {
           { required: true, message: "借还时间不能为空", trigger: "blur" }
         ],
         brNum: [
-          { required: true, message: "借还数量不能为空", trigger: "blur" }
+          { required: true, message: "借还数量不能为空", trigger: "blur" },
+          { type: "number", message: "借还数量必须为数字" }
         ],
         vcdId: [
-          { required: true, message: "VCD编号不能为空", trigger: "blur" }
+          { required: true, message: "VCD不能为空", trigger: "blur" }
         ],
         status: [
           { required: true, message: "借还状态，0表示借出，1表示归还不能为空", trigger: "blur" }
@@ -227,8 +262,56 @@ export default {
   },
   created() {
     this.getList();
+    this.getVcdList();
+    listUser().then(response => {
+        this.userList = response.rows;
+      });
   },
   methods: {
+    statusmaping(row,column){
+      let statusName = '';
+      this.statusList.forEach(item => {
+        if (item.value == row.status) {
+          statusName= item.label;
+        }
+      });
+      return statusName;
+    },
+    vcdmaping(row,column){
+      let vcdName = '';
+      this.vcdList.forEach(item => {
+        if (item.vcdId == row.vcdId) {
+          vcdName= item.vcdName;
+        }
+      });
+      return vcdName;
+    },
+    usermaping(row,column){
+      let userName = '';
+      this.userList.forEach(item => {
+        if (item.userId == row.borrowerId ) {
+          userName= item.userName;
+        }
+      });
+      return userName;
+    },
+    usermaping2(row,column){
+      let userName = '';
+      this.userList.forEach(item => {
+        if (item.userId == row.returnerId ) {
+          userName= item.userName;
+        }
+      });
+      return userName;
+    },
+    /** 获取VCD列表 */
+    getVcdList() {
+      this.loading = true;
+      listInfo({ pageNum: 1, pageSize: 100 }).then(response => {
+        this.vcdList = response.rows;
+        this.loading = false;
+      });
+    },
     /** 查询借还管理列表 */
     getList() {
       this.loading = true;
